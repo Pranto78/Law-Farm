@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Law Firm Signup</title>
+  <style>
+    /* Body Background */
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c1e1e, #1a0f0f, #0d0a0a);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Signup Container */
+    .signup-container {
+      width: 420px;
+      padding: 30px;
+      border-radius: 15px;
+      background: rgba(20, 20, 20, 0.85);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+    }
+
+    .signup-container h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #d4a373, #c08457, #b67c48);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Input Fields */
+    .signup-container input[type="text"],
+    .signup-container input[type="email"],
+    .signup-container input[type="password"],
+    .signup-container input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #3a2c2c, #1f1414);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .signup-container input:focus {
+      background: linear-gradient(135deg, #4b3621, #2e1c1c);
+      box-shadow: 0 0 10px rgba(212, 163, 115, 0.6);
+    }
+
+    /* Radio Buttons */
+    .gender {
+      margin: 10px 0;
+      color: #d4a373;
+      font-size: 1rem;
+    }
+    .gender label {
+      margin-right: 15px;
+    }
+
+    /* Terms & Conditions */
+    .terms {
+      margin: 15px 0;
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .btn-signup {
+      background: linear-gradient(90deg, #d4a373, #c08457, #b67c48);
+      color: #111;
+      font-weight: bold;
+    }
+
+    .btn-signup:hover {
+      background: linear-gradient(90deg, #e4b78d, #d49a6d, #c48756);
+      transform: translateY(-2px);
+    }
+
+    /* Links */
+    .signup-container p {
+      text-align: center;
+      margin-top: 15px;
+      color: #ccc;
+    }
+
+    .signup-container a {
+      color: #d4a373;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .signup-container a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>Create Account</h2>
+    <form>
+      <input type="text" placeholder="Full Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="password" placeholder="Password" required>
+      <input type="date" required>
+
+      <div class="gender">
+        <label><input type="radio" name="gender" value="male"> Male</label>
+        <label><input type="radio" name="gender" value="female"> Female</label>
+      </div>
+
+      <div class="terms">
+        <label>
+          <input type="checkbox" required> I agree to the Terms & Conditions
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-signup">Sign Up</button>
+
+      <p>Already have an account? <a href="#">Login here</a></p>
+    </form>
+  </div>
+
+</body>
+</html>
