@@ -168,64 +168,60 @@
      <main>
     <div class="form-container">
       <h1><i class="fa-regular fa-id-card"></i> Lawyer Registration Form</h1>
-      <form>
-        <div class="form-group">
-          <label for="cnic">CNIC</label>
-          <input type="text" id="cnic" placeholder="Enter CNIC">
-        </div>
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" placeholder="Enter Full Name">
-        </div>
-        <div class="form-group">
-          <label for="specialization">Specialization</label>
-          <select id="specialization">
-            <option value="">Select Specialization</option>
-            <option>Business</option>
-            <option>Criminal</option>
-            <option>Family</option>
-            <option>Corporate</option>
-            <option>Tax</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="casesDone">Cases Done</label>
-          <input type="number" id="casesDone" placeholder="Enter Total Cases">
-        </div>
-        <div class="form-group">
-          <label for="successCases">Success Cases</label>
-          <input type="number" id="successCases" placeholder="Enter Successful Cases">
-        </div>
-        <div class="form-group">
-          <label for="contact">Contact</label>
-          <input type="text" id="contact" placeholder="Enter Contact Number">
-        </div>
-        <div class="form-group">
-          <label for="location">Location</label>
-          <select id="location">
-            <option value="">Select Location</option>
-            <option>Dhaka</option>
-            <option>Chittagong</option>
-            <option>Khulna</option>
-            <option>Rajshahi</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="services">Services</label>
-          <select id="services">
-            <option value="">Select Services</option>
-            <option>Legal Consultation</option>
-            <option>Contract Review</option>
-            <option>Litigation</option>
-            <option>Tax Filing</option>
-          </select>
-        </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn btn-register">Register</button>
-          <button type="reset" class="btn btn-clear">Clear</button>
-        </div>
-      </form>
+      <!-- ------------------------------------------- -->
+<form action="register_lawyer.php" method="POST" enctype="multipart/form-data">
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" name="name" required>
+  </div>
+
+  <div class="form-group">
+    <label>Description</label>
+    <input type="text" name="description" required>
+  </div>
+
+  <div class="form-group">
+    <label>Service</label>
+    <select name="service" required>
+      <option>Corporate Law</option>
+      <option>Criminal Law</option>
+      <option>Family Law</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Institute</label>
+    <input type="text" name="institute" required>
+  </div>
+
+  <div class="form-group">
+    <label>Degree</label>
+    <input type="text" name="degree" required>
+  </div>
+
+  <div class="form-group">
+    <label>Graduation Year</label>
+    <input type="number" name="grad_year" required>
+  </div>
+
+  <div class="form-group">
+    <label>Cases Solved</label>
+    <input type="number" name="cases" required>
+  </div>
+
+  <!-- 🔹 New Image Upload Section -->
+  <div class="form-group">
+    <label>Profile Picture</label>
+    <input type="file" name="profile_image" accept="image/*" required>
+  </div>
+
+  <button type="submit" class="btn btn-register">Register</button>
+</form>
+
+
+<!-- ------------------------------------------------------------------------------- -->
+
     </div>
   </main>
 
@@ -277,6 +273,13 @@
         </div>
 
     </footer>
+
+
+
     
 </body>
 </html>
+
+<script src="Javascript/script.js"></script>
+
+
