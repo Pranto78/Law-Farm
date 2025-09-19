@@ -1,10 +1,11 @@
 <?php
 session_start();
-if (!isset($_SESSION['user'])) {
-    header("Location: login.html");
+if (!isset($_SESSION['user_id'])) {
+    header("Location: Client-login.html");
     exit();
 }
 ?>
+
 
 
 
@@ -21,6 +22,80 @@ if (!isset($_SESSION['user'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <style>
+        /* Overlay background */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            /* dark overlay */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal box */
+        .modal-content {
+            background: #1e293b;
+            /* dark gray */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Close button */
+        .closeNotify {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #facc15;
+            /* yellow */
+        }
+
+        .ap-btn {
+            width: 200px;
+            /* margin-right: 20px; */
+            background: linear-gradient(135deg, #978077ff, #a87748ff, #d4b182ff);
+            color: black;
+            font-weight: bolder;
+        }
+
+        /* ---------------- */
+
+        .notify-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 50%;
+            padding: 2px 6px;
+        }
+
+        .btn-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lg-btn {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,9 +116,106 @@ if (!isset($_SESSION['user'])) {
                 </div>
 
                 <!-- <button class=" lawyer-btn">Lawyer Registration</button> -->
-                <button class="btn-primary">Appointment Notify</button>
+                <!-- <button id="notifyBtn" class="ap-btn law-btn btn-primary"><i class="fa-regular fa-calendar-check"></i> Appointment Notify</button> -->
+                <div class="btn-wrapper">
+                    <button id="notifyBtn" class="ap-btn law-btn btn-primary">
+                        <i class="fa-regular fa-calendar-check"></i> Appointment Notify
+                    </button>
+                    <?php
+                    include 'db.php';
+                    $badgeCount = 0;
+                    if (isset($_SESSION['email'])) {
+                        $client_email = $_SESSION['email'];
+                        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM appointments WHERE client_name = ? AND is_seen = 0");
+                        $stmt->bind_param("s", $client_email);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $badgeCount = $row['total'] ?? 0;
+                        $stmt->close();
+                        $conn->close();
+                    }
+                    if ($badgeCount > 0) {
+                        echo "<span class='notify-badge'>$badgeCount</span>";
+                    }
+                    ?>
+                </div>
+
+
+                <button onclick="window.location.href='Client_logout.php'" class="lg-btn btn-primary logout"><i
+                        class="fa-solid fa-right-from-bracket"></i> Logout</button>
+
+
             </nav>
         </div>
+
+
+
+        <!-- Client Appointment Notify Modal -->
+        <div id="notifyModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="closeNotify">&times;</span>
+                <h2>Your Appointments</h2>
+
+                <table border="1" cellpadding="8" width="100%">
+                    <tr style="color:#facc15;">
+                        <th>Case</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                    <?php
+                    include 'db.php';
+                    if (isset($_SESSION['email'])) {
+                        $client_email = $_SESSION['email'];
+                        $stmt = $conn->prepare("SELECT * FROM appointments WHERE client_name = ? ORDER BY id DESC");
+                        $stmt->bind_param("s", $client_email);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . htmlspecialchars($row['case_desc']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['day']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['time']) . "</td>";
+                                echo "<td>";
+                                if ($row['status'] === 'approved') {
+                                    echo "<span style='color:green;'>✔ Approved</span>";
+                                } else {
+                                    echo "<span style='color:orange;'>⏳ Pending</span>";
+                                }
+                                echo "</td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='4' style='text-align:center;'>No appointments yet</td></tr>";
+                        }
+
+                        $stmt->close();
+                        $conn->close();
+                    } else {
+                        echo "<tr><td colspan='4' style='text-align:center;'>Please log in to see appointments</td></tr>";
+                    }
+                    ?>
+
+                </table>
+            </div>
+        </div>
+
+        <script>
+            // Open notify modal
+            document.getElementById("notifyBtn").onclick = function () {
+                document.getElementById("notifyModal").style.display = "flex";
+            };
+
+            // Close notify modal
+            document.querySelector(".closeNotify").onclick = function () {
+                document.getElementById("notifyModal").style.display = "none";
+            };
+        </script>
+
+
         <!-- ----------------------------------------------------- -->
         <div class="carousel">
 
@@ -301,6 +473,27 @@ if (!isset($_SESSION['user'])) {
         });
 
     </script> -->
+
+
+    <script>
+document.getElementById("notifyBtn").onclick = function() {
+  document.getElementById("notifyModal").style.display = "flex";
+
+  // 🔹 Mark appointments as seen when modal opens
+  fetch("mark_seen.php", { method: "POST" })
+    .then(res => res.text())
+    .then(data => {
+      const badge = document.querySelector(".notify-badge");
+      if (badge) badge.remove(); // remove badge after viewing
+    });
+};
+
+// Close modal
+document.querySelector(".closeNotify").onclick = function() {
+  document.getElementById("notifyModal").style.display = "none";
+};
+</script>
+
 
 </body>
 

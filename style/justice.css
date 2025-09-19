@@ -9,6 +9,11 @@ body {
 
 /* shared style */
 
+
+.logout{
+    background-color: #cfb996;
+}
+
 .flex-display{
     display: flex;
 }

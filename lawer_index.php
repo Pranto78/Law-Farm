@@ -9,7 +9,7 @@ if (!isset($_SESSION['lawyer_id'])) {
 
 // Get lawyer session data
 $lawyerName = $_SESSION['lawyer_name'];
-$lawyerUsername = $_SESSION['lawyer_username'];
+$lawyerUsername = $_SESSION['lawyer_gmail'];
 ?>
 
 
@@ -27,6 +27,66 @@ $lawyerUsername = $_SESSION['lawyer_username'];
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .btn-badge-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* rectangular styled button */
+        .lawyer-btn {
+            background: linear-gradient(145deg, #d4a373, #b07d62);
+            border: none;
+            width: 180px;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s ease;
+        }
+
+        .lawyer-btn:hover {
+            /* background: linear-gradient(145deg, #0a0704ff, #2f1b10ff); */
+            transform: translateY(-2px);
+            color: #000;
+
+        }
+
+        /*
+        
+        }
+
+        /* floating red badge */
+        .notify-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .logs-btn{
+            width: 140px;
+        }
+    </style>
 </head>
 
 <body>
@@ -42,11 +102,51 @@ $lawyerUsername = $_SESSION['lawyer_username'];
                     <a href="">Home</a>
                     <a href="">Services<i class="fa-solid fa-angle-right"></i></a>
                     <a href="">Cases<i class="fa-solid fa-angle-right"></i></a>
-                    <a href="LawyerCard.php">Our Lawyer<i class="fa-solid fa-angle-right"></i></a>
+                    <!-- <a href="LawyerCard.php">Our Lawyer<i class="fa-solid fa-angle-right"></i></a> -->
                     <a href="http://127.0.0.1:5500/Contact.html">Contact Us<i class="fa-solid fa-angle-right"></i></a>
                 </div>
 
-                <button class=" lawyer-btn">Appointments</button>
+                <!-- <button class="lawyer-btn"
+                    onclick="window.location.href='lawyer_appointment_dashboard.php'">Appointments</button> -->
+
+                <?php
+                include 'db.php';
+                $lawyer_id = $_SESSION['lawyer_id'];
+
+                // Count unseen appointments for this lawyer
+                $stmt = $conn->prepare("SELECT COUNT(*) as total FROM appointments WHERE lawyer_id = ? AND is_seen_lawyer = 0");
+                $stmt->bind_param("i", $lawyer_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $countData = $result->fetch_assoc();
+                $notifyCount = $countData['total'];
+                $stmt->close();
+                ?>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <!-- Appointments Button -->
+                    <div class="btn-badge-wrapper">
+                        <button id="appointmentsBtn" class="lawyer-btn" data-href="lawyer_appointment_dashboard.php">
+                            <i class="fa-solid fa-calendar-check"></i> Appointments
+                        </button>
+                        <?php if ($notifyCount > 0): ?>
+                            <span class="notify-badge"><?= $notifyCount ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <div class="btn-badge-wrapper">
+                        <button onclick="window.location.href='lawyer_logout.php'" class="logs-btn lawyer-btn">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                    </div>
+                </div>
+
+
+
+
+                <!-- <button class="logout-btn"
+    onclick="window.location.href='lawyer_logout.php'">Logout</button> -->
                 <!-- <button class="btn-primary">Client Login</button> -->
             </nav>
         </div>
@@ -307,6 +407,28 @@ $lawyerUsername = $_SESSION['lawyer_username'];
         });
 
     </script> -->
+
+
+    <script>
+        document.getElementById("appointmentsBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            const href = this.dataset.href;
+
+            // mark as seen then redirect
+            fetch("mark_seen_lawyer.php", { method: "POST" })
+                .then(res => res.text())
+                .then(() => {
+                    const badge = document.querySelector(".notify-badge");
+                    if (badge) badge.remove();
+                    window.location.href = href;
+                })
+                .catch(() => {
+                    window.location.href = href; // fallback
+                });
+        });
+    </script>
+
+
 
 </body>
 

@@ -16,6 +16,9 @@ $result = $conn->query("SELECT * FROM users ORDER BY id DESC");
 <head>
 <meta charset="UTF-8">
 <title>Admin Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+        integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 /* Body & Background */
 body {
@@ -137,12 +140,26 @@ a[href*="delete_user"]:hover {
         text-align: left;
         font-weight: bold;
     }
+
+    .Admin-front {
+        width: 1170px;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;           
+  padding: 10px 20px;            
+}
+
 }
 </style>
 </head>
 <body>
 
-<h1>Welcome, <?php echo $_SESSION['admin']; ?> (Admin)</h1>
+
+
+<div class="Admin-front">
+    <div><h1>Welcome Admin</h1></div>
+    <div><h1><i class="fa-solid fa-user-secret"></i> <?php echo $_SESSION['admin']; ?> </h1></div>
+</div>
 <a href="Admin_login.html" class="logout-btn">Logout</a>
 
 <h2 style="text-align:center; margin-bottom:20px; color:#d4a373;">Client Users</h2>

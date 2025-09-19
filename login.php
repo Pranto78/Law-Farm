@@ -16,14 +16,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $result->fetch_assoc();
         // Verify password
         if (password_verify($password, $user['password'])) {
-            $_SESSION['user'] = $user['full_name'];
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "<script>alert('Invalid password!'); window.location.href='login.html';</script>";
+    // Store useful info in session
+    $_SESSION['user_id']   = $user['id'];
+    $_SESSION['full_name'] = $user['full_name'];
+    $_SESSION['email']     = $user['email'];
+
+    header("Location: index.php");
+    exit();
+}
+ else {
+            echo "<script>alert('Invalid password!'); window.location.href=Client-login.html';</script>";
         }
     } else {
-        echo "<script>alert('No account found with this email!'); window.location.href='login.html';</script>";
+        echo "<script>alert('No account found with this email!'); window.location.href='Client-login.html';</script>";
     }
 
     $stmt->close();

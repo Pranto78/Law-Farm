@@ -5,28 +5,28 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-require_once 'db.php'; // make sure this path is correct and db.php creates $conn
+require_once 'db.php'; // make sure db.php creates $conn
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo "<p style='color:red'>Invalid request method. Use the login form (POST).</p>";
     exit;
 }
 
-$username = isset($_POST['username']) ? trim($_POST['username']) : '';
+$gmail = isset($_POST['gmail']) ? trim($_POST['gmail']) : '';
 $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
-if ($username === '' || $password === '') {
-    echo "<p style='color:red'>Please enter both username and password.</p>";
+if ($gmail === '' || $password === '') {
+    echo "<p style='color:red'>Please enter both Gmail and password.</p>";
     exit;
 }
 
-// Prepare statement
-$stmt = $conn->prepare("SELECT id, name, username, password FROM lawyer_admin WHERE username = ? LIMIT 1");
+// Prepare statement to fetch from lawyers table
+$stmt = $conn->prepare("SELECT id, name, gmail, password FROM lawyers WHERE gmail = ? LIMIT 1");
 if (!$stmt) {
     echo "<p style='color:red'>Database error (prepare failed): " . htmlspecialchars($conn->error) . "</p>";
     exit;
 }
-$stmt->bind_param('s', $username);
+$stmt->bind_param('s', $gmail);
 
 if (!$stmt->execute()) {
     echo "<p style='color:red'>Database error (execute failed): " . htmlspecialchars($stmt->error) . "</p>";
@@ -36,25 +36,20 @@ if (!$stmt->execute()) {
 
 $stmt->store_result();
 if ($stmt->num_rows === 0) {
-    echo "<p style='color:red'>❌ No account found with that username!</p>";
+    echo "<p style='color:red'>❌ No account found with that Gmail!</p>";
     $stmt->close();
     $conn->close();
     exit;
 }
 
 // Bind results and fetch
-$stmt->bind_result($id, $name, $dbusername, $dbpassword);
+$stmt->bind_result($id, $name, $dbgmail, $dbpassword);
 $stmt->fetch();
 
 // Trim stored password (in case of stray spaces)
 $dbpassword = is_string($dbpassword) ? trim($dbpassword) : $dbpassword;
 
-// === DEBUG HELPERS (uncomment if you need to inspect values) ===
-// echo "<pre>DEBUG:\nPosted username: ".htmlspecialchars($username)."\nPosted password: ".htmlspecialchars($password).
-//      "\nDB username: ".htmlspecialchars($dbusername)."\nDB password: ".htmlspecialchars($dbpassword)."</pre>";
-// ===============================================================
-
-// Accept login if either the plain text matches OR the hash verifies
+// Accept login if plain text matches or password_verify succeeds
 $loggedIn = false;
 if ($password === $dbpassword) {
     $loggedIn = true; // plain-text match
@@ -63,11 +58,11 @@ if ($password === $dbpassword) {
 }
 
 if ($loggedIn) {
-    // Successful login
+    // ✅ Successful login
     session_regenerate_id(true);
     $_SESSION['lawyer_id'] = $id;
     $_SESSION['lawyer_name'] = $name;
-    $_SESSION['lawyer_username'] = $dbusername;
+    $_SESSION['lawyer_gmail'] = $dbgmail;
 
     $stmt->close();
     $conn->close();

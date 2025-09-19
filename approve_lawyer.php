@@ -1,13 +1,6 @@
 <?php
 session_start();
 include 'db.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
-
 
 if (!isset($_SESSION['admin'])) { 
     header("Location: Admin_login.html"); 
@@ -36,40 +29,6 @@ if(isset($_GET['id'])){
             '$username',
             '$hashed_password'
         )");
-    }
-
-    // 4️⃣ Send email via Gmail SMTP
-    $mail = new PHPMailer(true);
-    try {
-        //Server settings
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'youremail@gmail.com'; // Your Gmail
-        $mail->Password   = 'yourapppassword';     // Gmail App Password
-        $mail->SMTPSecure = 'tls';
-        $mail->Port       = 587;
-
-        //Recipients
-        $mail->setFrom('youremail@gmail.com', 'Admin');
-        $mail->addAddress('prantof39@gmail.com', $lawyer['name']);
-
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = 'New Lawyer Admin Account Created';
-        $mail->Body    = "
-            <p>Hello {$lawyer['name']},</p>
-            <p>A lawyer admin account has been created.</p>
-            <p><strong>Username:</strong> $username</p>
-            <p><strong>Password:</strong> $password</p>
-            <p>Login here: <a href='http://localhost/yourproject/lawyer_login.php'>Lawyer Panel</a></p>
-            <p>Thank you!</p>
-        ";
-
-        $mail->send();
-        // Email sent successfully
-    } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
 

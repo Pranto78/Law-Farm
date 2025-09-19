@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $degree = $_POST['degree'];
     $grad_year = $_POST['grad_year'];
     $cases = $_POST['cases'];
+    $gmail = $_POST['gmail'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // 🔹 Secure password hashing
 
     // 🔹 Handle Image Upload
     $target_dir = "uploads/"; // Make sure this folder exists
@@ -21,8 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
         // Save file name to database
-        $sql = "INSERT INTO lawyers (name, description, service, institute, degree, grad_year, cases, profile_image, status) 
-                VALUES ('$name', '$description', '$service', '$institute', '$degree', '$grad_year', '$cases', '$image_name', 'pending')";
+        $sql = "INSERT INTO lawyers (name, description, service, institute, degree, grad_year, cases, profile_image, status, gmail, password) 
+                VALUES ('$name', '$description', '$service', '$institute', '$degree', '$grad_year', '$cases', '$image_name', 'pending', '$gmail', '$password')";
 
         if ($conn->query($sql) === TRUE) {
             echo "Lawyer registered successfully!";

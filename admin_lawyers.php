@@ -16,6 +16,7 @@ $lawyers = $conn->query("SELECT * FROM lawyers ORDER BY id DESC");
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lawyer Approval</title>
+
 <style>
     body {
         font-family: Arial, sans-serif;
